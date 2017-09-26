@@ -1,0 +1,6 @@
+node_modules/
+branches/
+hooks/
+info/
+objects/
+refs
