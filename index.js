@@ -1,10 +1,13 @@
+var mongoose = require('mongoose');
+var db = mongoose.createConnection('mongodb://localhost:27017/scraping');
 var tress = require('tress');
 var needle = require('needle');
 var cheerio = require('cheerio');
 var resolve = require('url').resolve;
 var fs = require('fs');
 
-var URL = 'http://www.ferra.ru/ru/techlife/news/';
+
+var URL = 'https://vk.com/tlptime';
 var results = [];
 
 var q = tress(function(url, callback){
@@ -13,27 +16,15 @@ var q = tress(function(url, callback){
 
         // парсим DOM
         var $ = cheerio.load(res.body);
-
+console.log($('.wall_post_text').text())
         //информация о новости
-        if($('.b_infopost').contents().eq(2).text().trim().slice(0, -1) === 'Алексей Козлов'){
-            results.push({
-                title: $('h1').text(),
-                date: $('.b_infopost>.date').text(),
+        for (var i = 0; i < $('.post_info').length; i++) {
+            $('.post_info')[i] && results.push({
+                text: $('.wall_post_text').text(),
                 href: url,
-                size: $('.newsbody').text().length
             });
+            
         }
-
-        //список новостей
-        $('.b_rewiev p>a').each(function() {
-            q.push($(this).attr('href'));
-        });
-
-        //паджинатор
-        $('.bpr_next>a').each(function() {
-            // не забываем привести относительный адрес ссылки к абсолютному
-            q.push(resolve(URL, $(this).attr('href')));
-        });
 
         callback();
     });
