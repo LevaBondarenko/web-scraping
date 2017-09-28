@@ -16,16 +16,13 @@ var q = tress(function(url, callback){
 
         // парсим DOM
         var $ = cheerio.load(res.body);
-console.log($('.wall_post_text').text())
         //информация о новости
-        for (var i = 0; i < $('.post_info').length; i++) {
-            $('.post_info')[i] && results.push({
-                text: $('.wall_post_text').text(),
-                href: url,
-            });
-            
-        }
 
+        $('.wall_post_text').each(function(key, item) {
+            results[key] = {
+                text: $(this).text()
+            };
+        })
         callback();
     });
 }, 10); // запускаем 10 параллельных потоков
